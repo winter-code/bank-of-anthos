@@ -1,9 +1,72 @@
 steps:
-# This step deploys the new version of our container image
-# in the hello-cloudbuild Kubernetes Engine cluster.
-- name: 'gcr.io/cloud-builders/kubectl'
-  id: Deploy
-  args:
-  - 'apply'
-  - '-f'
-  - 'kubernetes_manifests/*.yaml'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Deploy1
+    args:
+    - 'apply'
+    - '-f'
+    - 'kubernetes-manifests/accounts-db.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cymbal-bank-prod'
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Deploy2
+    args:
+    - 'apply'
+    - '-f'
+    - 'kubernetes-manifests/config.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cymbal-bank-prod'
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Deploy3
+    args:
+    - 'apply'
+    - '-f'
+    - 'kubernetes-manifests/balance-reader.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cymbal-bank-prod'
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Deploy4
+    args:
+    - 'apply'
+    - '-f'
+    - 'kubernetes-manifests/contacts.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cymbal-bank-prod'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Deploy6
+    args:
+    - 'apply'
+    - '-f'
+    - 'kubernetes-manifests/ledger-db.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cymbal-bank-prod'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Deploy7
+    args:
+    - 'apply'
+    - '-f'
+    - 'kubernetes-manifests/ledger-writer.yaml'
+    - '-f'
+    - 'kubernetes-manifests/loadgenerator.yaml'
+    - '-f'
+    - 'kubernetes-manifests/transaction-history.yaml' 
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cymbal-bank-prod'
+  
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Delete
+    args:
+    - 'delete'
+    - 'pods'
+    - '--all'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cymbal-bank-prod'
